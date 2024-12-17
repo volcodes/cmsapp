@@ -1,6 +1,7 @@
 package users
 
 import (
+	"cms-project/pkg/response"
 	"encoding/json"
 	"net/http"
 )
@@ -9,7 +10,7 @@ import (
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 	users, err := GetUsers()
 	if err != nil {
-		http.Error(w, "Failed to fetch users", http.StatusInternalServerError)
+		response.JSON(w, http.StatusInternalServerError, false, "Failed to fetch users", nil)
 		return
 	}
 	json.NewEncoder(w).Encode(users)

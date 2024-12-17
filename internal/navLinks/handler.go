@@ -1,6 +1,7 @@
 package navLinks
 
 import (
+	"cms-project/pkg/response"
 	"encoding/json"
 	"net/http"
 )
@@ -9,7 +10,7 @@ import (
 func GetNavLinksHandler(w http.ResponseWriter, r *http.Request) {
 	menus, err := GetNavLinks()
 	if err != nil {
-		http.Error(w, "Failed to fetch menus", http.StatusInternalServerError)
+		response.JSON(w, http.StatusInternalServerError, false, "Failed to fetch menus", nil)
 		return
 	}
 	json.NewEncoder(w).Encode(menus)

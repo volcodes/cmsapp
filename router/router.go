@@ -21,8 +21,12 @@ func New() *mux.Router {
 	})
 
 	// Register routes
-	registerUserRoutes(r)
-	registerNavLinksRoutes(r)
+	usersRouter := r.PathPrefix("/api/users").Subrouter()
+	users.RegisterUsersRoutes(usersRouter)
+
+	// Nav Links routes
+	navLinksRouter := r.PathPrefix("/api/nav_links").Subrouter()
+	navLinks.RegisterNavLinksRoutes(navLinksRouter)
 
 	// Add a catch-all handler for 404s
 	r.NotFoundHandler = http.HandlerFunc(notFoundHandler)
@@ -49,14 +53,6 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNotFound)
 	w.Write([]byte(`{"error": "Route not found"}`))
-}
-
-func registerUserRoutes(r *mux.Router) {
-	r.HandleFunc("/api/users", users.GetUsersHandler).Methods("GET")
-}
-
-func registerNavLinksRoutes(r *mux.Router) {
-	r.HandleFunc("/api/nav_links", navLinks.GetNavLinksHandler).Methods("GET")
 }
 
 // func registerMenuRoutes(r *mux.Router) {
