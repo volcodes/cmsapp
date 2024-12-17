@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // New creates and configures a new router
@@ -27,6 +28,9 @@ func New() *mux.Router {
 	// Nav Links routes
 	navLinksRouter := r.PathPrefix("/api/nav_links").Subrouter()
 	navLinks.RegisterNavLinksRoutes(navLinksRouter)
+
+	// Swagger route
+	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	// Add a catch-all handler for 404s
 	r.NotFoundHandler = http.HandlerFunc(notFoundHandler)

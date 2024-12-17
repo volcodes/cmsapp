@@ -7,6 +7,12 @@ import (
 )
 
 // GetMenusHandler handles retrieving all menus
+// @Summary      Get navigation links
+// @Description  Retrieve a list of all navigation links (menus)
+// @Tags         NavLink
+// @Success      200 {object} response.APIResponse
+// @Failure      500  {object}  response.APIResponse  "Internal Server Error"
+// @Router       /api/nav_links [get]
 func GetNavLinksHandler(w http.ResponseWriter, r *http.Request) {
 	menus, err := GetNavLinks()
 	if err != nil {

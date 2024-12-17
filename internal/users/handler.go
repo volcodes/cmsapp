@@ -7,6 +7,12 @@ import (
 )
 
 // GetBlogsHandler handles retrieving all blogs
+// @Summary      Get all users
+// @Description  Retrieve a list of all users from the database
+// @Tags         User
+// @Success      200 {object} response.APIResponse
+// @Failure      500 {object} response.APIResponse
+// @Router       /api/users [get]
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 	users, err := GetUsers()
 	if err != nil {
