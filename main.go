@@ -11,9 +11,19 @@ import (
 
 // @title CMS Project API
 // @version 1.0
-// @description This is a simple CMS API with blog and menu features.
+// @description This is a simple CMS API.
 // @host localhost:8080
 // @BasePath /
+func Handler(w http.ResponseWriter, r *http.Request) {
+	// Initialize database if not initialized
+	database.InitDB()
+
+	// Initialize router
+	router := router.New()
+
+	// Serve the request
+	router.ServeHTTP(w, r)
+}
 
 // @contact.name Your Name
 // @contact.url https://your-website.com
