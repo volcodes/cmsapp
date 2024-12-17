@@ -18,7 +18,7 @@ func GetNavLinksHandler(w http.ResponseWriter, r *http.Request) {
 		response.JSON(w, http.StatusInternalServerError, false, "Failed to fetch menus", nil)
 		return
 	}
-	response.JSON(w, http.StatusOK, true, "Users retrieved successfully", menus)
+	response.JSON(w, http.StatusOK, true, "Nav links retrieved successfully", menus)
 }
 
 // CreateMenuHandler handles creating a new menu

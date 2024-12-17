@@ -2,7 +2,9 @@ package users
 
 import (
 	"cms-project/pkg/response"
+	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 // GetBlogsHandler handles retrieving all blogs
@@ -21,19 +23,40 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, true, "Users retrieved successfully", users)
 }
 
-// CreateBlogHandler handles creating a new blog
-// func CreateBlogHandler(w http.ResponseWriter, r *http.Request) {
-// 	var blog Blog
-// 	if err := json.NewDecoder(r.Body).Decode(&blog); err != nil {
-// 		http.Error(w, "Invalid input", http.StatusBadRequest)
-// 		return
-// 	}
-// 	if err := CreateBlog(blog); err != nil {
-// 		http.Error(w, "Failed to create blog", http.StatusInternalServerError)
-// 		return
-// 	}
-// 	w.WriteHeader(http.StatusCreated)
-// }
+// CreateUserHandler handles creating a new user
+// @Summary      Creates a new user
+// @Description  Create a new user
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Param        user body User true "User object"
+// @Success      201 {object} response.APIResponse
+// @Failure      400 {object} response.APIResponse
+// @Failure      500 {object} response.APIResponse
+// @Router       /api/users [post]
+func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
+	var user User
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		response.JSON(w, http.StatusBadRequest, false, "Invalid input format", nil)
+		return
+	}
+
+	createdUser, err := CreateUser(user)
+	if err != nil {
+		switch {
+		case strings.Contains(err.Error(), "required"):
+			response.JSON(w, http.StatusBadRequest, false, err.Error(), nil)
+		default:
+			response.JSON(w, http.StatusInternalServerError, false, "Failed to create user", nil)
+		}
+		return
+	}
+
+	// Remove sensitive data before sending response
+	createdUser.Password = ""
+
+	response.JSON(w, http.StatusCreated, true, "User created successfully", createdUser)
+}
 
 // GetBlogByIDHandler handles retrieving a single blog by ID
 // func GetBlogByIDHandler(w http.ResponseWriter, r *http.Request) {

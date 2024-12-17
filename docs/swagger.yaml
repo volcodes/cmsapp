@@ -8,6 +8,43 @@ definitions:
       success:
         type: boolean
     type: object
+  users.User:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      is_blocked:
+        type: boolean
+      is_deleted:
+        type: boolean
+      is_suspended:
+        type: boolean
+      is_verified:
+        type: boolean
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      role:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -21,8 +58,6 @@ paths:
   /api/nav_links:
     get:
       description: Retrieve a list of all navigation links (menus)
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
@@ -34,12 +69,10 @@ paths:
             $ref: '#/definitions/response.APIResponse'
       summary: Get navigation links
       tags:
-      - navigation
+      - NavLink
   /api/users:
     get:
       description: Retrieve a list of all users from the database
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
@@ -51,5 +84,34 @@ paths:
             $ref: '#/definitions/response.APIResponse'
       summary: Get all users
       tags:
-      - users
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/users.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      summary: Creates a new user
+      tags:
+      - User
 swagger: "2.0"
