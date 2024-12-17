@@ -2,7 +2,6 @@ package navLinks
 
 import (
 	"cms-project/pkg/response"
-	"encoding/json"
 	"net/http"
 )
 
@@ -19,7 +18,7 @@ func GetNavLinksHandler(w http.ResponseWriter, r *http.Request) {
 		response.JSON(w, http.StatusInternalServerError, false, "Failed to fetch menus", nil)
 		return
 	}
-	json.NewEncoder(w).Encode(menus)
+	response.JSON(w, http.StatusOK, true, "Users retrieved successfully", menus)
 }
 
 // CreateMenuHandler handles creating a new menu
