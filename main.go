@@ -1,4 +1,4 @@
-package handler
+package MainHandler
 
 import (
 	_ "cms-project/docs"
@@ -14,21 +14,11 @@ import (
 // @description This is a simple CMS API.
 // @host localhost:8080
 // @BasePath /
-func Handler(w http.ResponseWriter, r *http.Request) {
-	// Initialize database if not initialized
-	database.InitDB()
-
-	// Initialize router
-	router := router.New()
-
-	// Serve the request
-	router.ServeHTTP(w, r)
-}
 
 // @contact.name Your Name
 // @contact.url https://your-website.com
 // @contact.email your-email@example.com
-func main() {
+func MainHandler() {
 	// Initialize database
 	database.InitDB()
 
