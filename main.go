@@ -12,8 +12,9 @@ import (
 // @title CMS Project API
 // @version 1.0
 // @description This is a simple CMS API.
-// @host localhost:8080
+// @host ${VERCEL_URL}
 // @BasePath /
+// @schemes https
 
 // @contact.name Your Name
 // @contact.url https://your-website.com

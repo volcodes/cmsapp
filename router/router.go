@@ -16,6 +16,11 @@ func New() *mux.Router {
 	// Add middleware
 	r.Use(corsMiddleware)
 
+	// Redirect root to Swagger documentation
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/swagger/index.html", http.StatusMovedPermanently)
+	})
+
 	// Add a catch-all route for OPTIONS requests
 	r.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
