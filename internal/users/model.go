@@ -2,8 +2,6 @@ package users
 
 import "time"
 
-// User is a user model
-
 type User struct {
 	ID          int       `db:"id" json:"id"`
 	Name        string    `db:"name" json:"name"`
@@ -22,4 +20,8 @@ type User struct {
 	IsVerified  bool      `db:"is_verified" json:"is_verified"`
 	IsBlocked   bool      `db:"is_blocked" json:"is_blocked"`
 	IsSuspended bool      `db:"is_suspended" json:"is_suspended"`
+}
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }

@@ -4,7 +4,10 @@ import (
 	"cms-project/internal/database"
 	"errors"
 	"log"
+	"os"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // GetUsers retrieves all blogs from the database
@@ -92,25 +95,37 @@ func validateUser(user User) error {
 	return nil
 }
 
-// // GetBlogByID retrieves a single blog by its ID
-// func GetBlogByID(id int) (*Blog, error) {
-// 	var blog Blog
-// 	query := "SELECT * FROM blogs WHERE id = $1"
-// 	err := database.DB.Get(&blog, query, id)
-// 	if err != nil {
-// 		log.Printf("Error fetching blog by ID: %v", err)
-// 		return nil, err
-// 	}
-// 	return &blog, nil
-// }
+func Login(email, password string) (*User, string, error) {
+	var user User
+	query := "SELECT * FROM users WHERE email = $1 AND is_active = true"
 
-// // DeleteBlog removes a blog from the database
-// func DeleteBlog(id int) error {
-// 	query := "DELETE FROM blogs WHERE id = $1"
-// 	_, err := database.DB.Exec(query, id)
-// 	if err != nil {
-// 		log.Printf("Error deleting blog: %v", err)
-// 		return err
-// 	}
-// 	return nil
-// }
+	err := database.DB.Get(&user, query, email)
+	if err != nil {
+		return nil, "", errors.New("Invalid credentials")
+	}
+
+	// TODO: Replace with proper password hashing comparison
+	if user.Password != password {
+		return nil, "", errors.New("Invalid credentials")
+	}
+
+	// Generate JWT token
+	token := jwt.New(jwt.SigningMethodHS256)
+	claims := token.Claims.(jwt.MapClaims)
+	claims["user_id"] = user.ID
+	claims["email"] = user.Email
+	claims["role"] = user.Role
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix() // Token expires in 24 hours
+
+	// Sign the token with your secret key
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	if err != nil {
+		return nil, "", errors.New("Failed to generate token")
+	}
+
+	// Clear sensitive data
+	user.Password = ""
+	log.Printf("Logged %v, token: %v", user.Email, tokenString)
+
+	return &user, tokenString, nil
+}

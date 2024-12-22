@@ -1,4 +1,4 @@
-package MainHandler
+package main
 
 import (
 	_ "cms-project/docs"
@@ -19,7 +19,7 @@ import (
 // @contact.name Your Name
 // @contact.url https://your-website.com
 // @contact.email your-email@example.com
-func MainHandler() {
+func main() {
 	// Initialize database
 	database.InitDB()
 

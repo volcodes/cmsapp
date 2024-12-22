@@ -23,7 +23,7 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, true, "Users retrieved successfully", users)
 }
 
-// CreateUserHandler handles creating a new user
+// RegisterHandler handles creating a new user
 // @Summary      Creates a new user
 // @Description  Create a new user
 // @Tags         User
@@ -33,8 +33,8 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 // @Success      201 {object} response.APIResponse
 // @Failure      400 {object} response.APIResponse
 // @Failure      500 {object} response.APIResponse
-// @Router       /api/users [post]
-func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
+// @Router       /api/users/register [post]
+func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		response.JSON(w, http.StatusBadRequest, false, "Invalid input format", nil)
@@ -58,33 +58,34 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusCreated, true, "User created successfully", createdUser)
 }
 
-// GetBlogByIDHandler handles retrieving a single blog by ID
-// func GetBlogByIDHandler(w http.ResponseWriter, r *http.Request) {
-// 	vars := mux.Vars(r)
-// 	id, err := strconv.Atoi(vars["id"])
-// 	if err != nil {
-// 		http.Error(w, "Invalid blog ID", http.StatusBadRequest)
-// 		return
-// 	}
-// 	blog, err := GetBlogByID(id)
-// 	if err != nil {
-// 		http.Error(w, "Blog not found", http.StatusNotFound)
-// 		return
-// 	}
-// 	json.NewEncoder(w).Encode(blog)
-// }
+// LoginHandler handles user login
+// @Summary      User login
+// @Description  Authenticate user and return JWT token
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Param        credentials body LoginRequest true "Login credentials"
+// @Success      200 {object} response.APIResponse
+// @Failure      400 {object} response.APIResponse
+// @Failure      401 {object} response.APIResponse
+// @Router       /api/users/login [post]
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	var loginReq LoginRequest
+	if err := json.NewDecoder(r.Body).Decode(&loginReq); err != nil {
+		response.JSON(w, http.StatusBadRequest, false, "Invalid input format", nil)
+		return
+	}
 
-// DeleteBlogHandler handles deleting a blog by ID
-// func DeleteBlogHandler(w http.ResponseWriter, r *http.Request) {
-// 	vars := mux.Vars(r)
-// 	id, err := strconv.Atoi(vars["id"])
-// 	if err != nil {
-// 		http.Error(w, "Invalid blog ID", http.StatusBadRequest)
-// 		return
-// 	}
-// 	if err := DeleteBlog(id); err != nil {
-// 		http.Error(w, "Failed to delete blog", http.StatusInternalServerError)
-// 		return
-// 	}
-// 	w.WriteHeader(http.StatusNoContent)
-// }
+	user, token, err := Login(loginReq.Email, loginReq.Password)
+	if err != nil {
+		response.JSON(w, http.StatusUnauthorized, false, err.Error(), nil)
+		return
+	}
+
+	responseData := map[string]interface{}{
+		"user":  user,
+		"token": token,
+	}
+
+	response.JSON(w, http.StatusOK, true, "Login successful", responseData)
+}

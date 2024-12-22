@@ -8,6 +8,13 @@ definitions:
       success:
         type: boolean
     type: object
+  users.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   users.User:
     properties:
       address:
@@ -45,13 +52,13 @@ definitions:
       updated_at:
         type: string
     type: object
-host: localhost:8080
+host: ${VERCEL_URL}
 info:
   contact:
     email: your-email@example.com
     name: Your Name
     url: https://your-website.com
-  description: This is a simple CMS API with blog and menu features.
+  description: This is a simple CMS API.
   title: CMS Project API
   version: "1.0"
 paths:
@@ -85,6 +92,37 @@ paths:
       summary: Get all users
       tags:
       - User
+  /api/users/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/users.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      summary: User login
+      tags:
+      - User
+  /api/users/register:
     post:
       consumes:
       - application/json
@@ -114,4 +152,6 @@ paths:
       summary: Creates a new user
       tags:
       - User
+schemes:
+- https
 swagger: "2.0"
