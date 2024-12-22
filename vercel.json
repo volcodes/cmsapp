@@ -1,19 +1,27 @@
 {
-    "version": 2,
-    "builds": [
+  "version": 2,
+  "builds": [
       {
-        "src": "main.go",
-        "use": "@vercel/go"
+          "src": "api/index.go",
+          "use": "@vercel/go"
       }
-    ],
-    "routes": [
+  ],
+  "routes": [
       {
-        "src": "/users/(.*)",
-        "dest": "main.go"
+          "src": "/",
+          "dest": "/api/index.go"
       },
       {
-        "src": "/nav_links/(.*)",
-        "dest": "main.go"
+          "src": "/swagger",
+          "dest": "/api/index.go"
+      },
+      {
+          "src": "/swagger/(.*)",
+          "dest": "/api/main.go"
+      },
+      {
+          "src": "/api/(.*)",
+          "dest": "/api/main.go"
       }
-    ]
+  ]
 }

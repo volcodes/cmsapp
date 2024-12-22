@@ -1,18 +1,24 @@
 package navLinks
 
 import (
-	"encoding/json"
+	"cms-project/pkg/response"
 	"net/http"
 )
 
 // GetMenusHandler handles retrieving all menus
+// @Summary      Get navigation links
+// @Description  Retrieve a list of all navigation links (menus)
+// @Tags         NavLink
+// @Success      200 {object} response.APIResponse
+// @Failure      500  {object}  response.APIResponse  "Internal Server Error"
+// @Router       /api/nav_links [get]
 func GetNavLinksHandler(w http.ResponseWriter, r *http.Request) {
 	menus, err := GetNavLinks()
 	if err != nil {
-		http.Error(w, "Failed to fetch menus", http.StatusInternalServerError)
+		response.JSON(w, http.StatusInternalServerError, false, "Failed to fetch menus", nil)
 		return
 	}
-	json.NewEncoder(w).Encode(menus)
+	response.JSON(w, http.StatusOK, true, "Nav links retrieved successfully", menus)
 }
 
 // CreateMenuHandler handles creating a new menu
