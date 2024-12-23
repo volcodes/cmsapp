@@ -101,12 +101,12 @@ func Login(email, password string) (*User, string, error) {
 
 	err := database.DB.Get(&user, query, email)
 	if err != nil {
-		return nil, "", errors.New("Invalid credentials")
+		return nil, "", errors.New("invalid credentials")
 	}
 
 	// TODO: Replace with proper password hashing comparison
 	if user.Password != password {
-		return nil, "", errors.New("Invalid credentials")
+		return nil, "", errors.New("invalid credentials")
 	}
 
 	// Generate JWT token
@@ -120,7 +120,7 @@ func Login(email, password string) (*User, string, error) {
 	// Sign the token with your secret key
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
-		return nil, "", errors.New("Failed to generate token")
+		return nil, "", errors.New("failed to generate token")
 	}
 
 	// Clear sensitive data
